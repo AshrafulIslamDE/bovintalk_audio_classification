@@ -15,7 +15,7 @@ HOP_LENGTH = 512
 # Training
 BATCH_SIZE = 8
 EPOCHS = 100
-LEARNING_RATE = 0.0003
+LEARNING_RATE = 0.0001
 
 # Model save path
 MODEL_PATH = "hfc_lfc_cnn.pth"
