@@ -1,20 +1,10 @@
 import torch
 from torch.utils.data import DataLoader
 from audio_dataset import AudioDataset
+from config import BATCH_SIZE, LEARNING_RATE, EPOCHS, MODEL_PATH
+from mel_spectogram_config import get_transformation
 from model_architecture import AudioCNN
 from split_dataset import split_dataset
-from config import BATCH_SIZE, EPOCHS, LEARNING_RATE, MODEL_PATH, N_FFT, TARGET_SAMPLE_RATE, HOP_LENGTH, N_MELS
-from torch.nn.utils.rnn import pad_sequence
-import torchaudio
-def get_transformation():
-    mel_transform = torchaudio.transforms.MelSpectrogram(
-        sample_rate=TARGET_SAMPLE_RATE,
-        n_fft=N_FFT,
-        hop_length=HOP_LENGTH,
-        n_mels=N_MELS
-    )
-    return mel_transform
-
 
 # Load split datasets
 (train_files, train_labels), (val_files, val_labels), _ = split_dataset()

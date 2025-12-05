@@ -9,7 +9,6 @@ def predict(audio_path):
     model.eval()
 
     waveform, sr = torchaudio.load(audio_path)
-    spec = SpectrogramGenerator()
     mel = spec.generate(waveform, sr).unsqueeze(0).unsqueeze(0)
 
     pred = model(mel)
