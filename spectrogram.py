@@ -1,33 +1,38 @@
-import torch
 import torchaudio
-from config import TARGET_SAMPLE_RATE, N_MELS, N_FFT, HOP_LENGTH
+import matplotlib.pyplot as plt  # Import for plotting
+import os  # Import for file path checking
 
-class SpectrogramGenerator:
-    def __init__(self):
-        self.resampler = torchaudio.transforms.Resample(
-            orig_freq=44100, new_freq=TARGET_SAMPLE_RATE
-        )
+from audio_dataset import AudioDataset
+from config import TARGET_SAMPLE_RATE, N_FFT, HOP_LENGTH, N_MELS
+from split_dataset import load_all_files
 
-        self.mel_transform = torchaudio.transforms.MelSpectrogram(
+mel_transform = torchaudio.transforms.MelSpectrogram(
             sample_rate=TARGET_SAMPLE_RATE,
             n_fft=N_FFT,
             hop_length=HOP_LENGTH,
             n_mels=N_MELS
         )
+if __name__ == '__main__':
 
-    def generate(self, waveform, sample_rate):
-        # Convert stereo → mono
-        if waveform.shape[0] > 1:
-            waveform = torch.mean(waveform, dim=0, keepdim=True)
+        # --- 3. Generate Spectrogram ---
+        files, labels = load_all_files()
+        audio = AudioDataset(files, labels, mel_transform)
+        signal,label = audio[1]
 
-        # Resample
-        if sample_rate != TARGET_SAMPLE_RATE:
-            waveform = self.resampler(waveform)
+        # generate spectogram
+        signal_np = signal.squeeze()  # removes the channel dimension
+        signal_np = signal_np.numpy() if hasattr(signal, "numpy") else signal_np
 
-        # Mel spectrogram
-        mel = self.mel_transform(waveform)
-        mel = torch.log(mel + 1e-9)  # log compression
+        plt.figure(figsize=(10, 4))
+        plt.imshow(signal_np, aspect='auto', origin='lower')
+        plt.title(f"Mel-Spectrogram (Label: {label})")
+        plt.xlabel("Time")
+        plt.ylabel("Mel Frequency Bins")
+        plt.colorbar(format='%+2.0f dB')
+        plt.show()
 
-        # Normalize
-        mel = (mel - mel.mean()) / (mel.std() + 1e-9)
-        return mel
+
+
+
+
+

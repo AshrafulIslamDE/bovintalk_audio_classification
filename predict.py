@@ -1,7 +1,6 @@
 import torch
 import torchaudio
 from model_architecture import AudioCNN
-from spectrogram import SpectrogramGenerator
 from config import MODEL_PATH
 
 def predict(audio_path):

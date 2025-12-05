@@ -1,6 +1,19 @@
 import torch
-from data_processing import load_all_files
-from config import TRAIN_RATIO, VAL_RATIO, TEST_RATIO, SEED
+import os
+from config import TRAIN_RATIO, VAL_RATIO, TEST_RATIO, SEED, AUDIO_DIRS
+
+
+def load_all_files(base_dir="."):
+    files = []
+    labels = []
+    for label_name, folder in AUDIO_DIRS.items():
+        folder_path = os.path.join(base_dir, folder)
+        label_idx = 0 if label_name == "HFC" else 1
+        for file in os.listdir(folder_path):
+            if file.lower().endswith((".wav", ".mp3", ".flac", ".m4a", ".ogg", ".wma")):
+                files.append(os.path.join(folder_path, file))
+                labels.append(label_idx)
+    return files, labels
 
 def split_dataset(base_dir="."):
     files, labels = load_all_files(base_dir)
@@ -24,3 +37,4 @@ def split_dataset(base_dir="."):
     test_labels = [labels[i] for i in indices[train_len+val_len:]]
 
     return (train_files, train_labels), (val_files, val_labels), (test_files, test_labels)
+
