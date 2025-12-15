@@ -1,25 +1,48 @@
 import torch
 from torch.utils.data import DataLoader
 from audio_dataset import AudioDataset
+from utils import get_device
+from vgg_mel_dataset import VGGMelDataset  # <-- NEW
 from config import BATCH_SIZE, LEARNING_RATE, EPOCHS, MODEL_PATH
 from mel_spectogram_config import get_transformation
-from model_architecture import AudioCNN
 from split_dataset import split_dataset
-from utils import get_device
+from torchvision import models
+import torch.nn as nn
 
-# Load split datasets
+# ------------------------
+# Load Original Audio Data
+# ------------------------
 (train_files, train_labels), (val_files, val_labels), _ = split_dataset()
 
-train_dataset = AudioDataset(train_files, train_labels,get_transformation())
-val_dataset = AudioDataset(val_files, val_labels,get_transformation())
+train_audio = AudioDataset(train_files, train_labels, get_transformation())
+val_audio   = AudioDataset(val_files, val_labels, get_transformation())
+
+# ------------------------
+# Wrap with VGG16 Dataset
+# ------------------------
+train_dataset = VGGMelDataset(train_audio)
+val_dataset   = VGGMelDataset(val_audio)
 
 train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
-val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE)
+val_loader   = DataLoader(val_dataset, batch_size=BATCH_SIZE)
 
-model = AudioCNN()
+# ------------------------
+# Load VGG16 Model
+# ------------------------
+model = models.vgg16(weights="IMAGENET1K_V1")
+
+# Freeze feature extractor
+for p in model.features.parameters():
+    p.requires_grad = False
+
+# Replace classifier for 2 classes
+model.classifier[6] = nn.Linear(4096, 2)
+
 model = model.to(get_device())
-criterion = torch.nn.CrossEntropyLoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=LEARNING_RATE)
+
+criterion = nn.CrossEntropyLoss()
+optimizer = torch.optim.Adam(model.classifier.parameters(), lr=LEARNING_RATE)
+
 for epoch in range(EPOCHS):
     # Train
     model.train()

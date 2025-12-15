@@ -14,7 +14,7 @@ HOP_LENGTH = 512
 
 # Training
 BATCH_SIZE = 8
-EPOCHS = 100
+EPOCHS = 40
 LEARNING_RATE = 0.0001
 
 # Model save path
@@ -22,8 +22,8 @@ MODEL_PATH = "hfc_lfc_cnn.pth"
 
 # Split ratio
 TRAIN_RATIO = 0.75
-VAL_RATIO = 0.05
-TEST_RATIO = 0.20
+VAL_RATIO = 0.10
+TEST_RATIO = 0.15
 
 # Random seed
 SEED = 42

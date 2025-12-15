@@ -2,12 +2,14 @@ import torch
 import torch.nn as nn
 
 
-def create_convolution_layer(in_channels, out_channels, padding=1, kernel_size=3):
-    return nn.Sequential(
+def create_convolution_layer(in_channels, out_channels, padding=1, kernel_size=3,with_pooling=True):
+    layers=[ nn.Sequential(
         nn.Conv2d(in_channels, out_channels, kernel_size, stride=1, padding=padding),
-        nn.ReLU(),
-        nn.MaxPool2d(kernel_size=2, stride=2),
-    )
+        nn.ReLU())]
+    if with_pooling:
+        layers.append(nn.MaxPool2d(kernel_size=2, stride=2))
+    return nn.Sequential(*layers)
+
 
 
 class AudioCNN(nn.Module):
@@ -19,6 +21,7 @@ class AudioCNN(nn.Module):
             create_convolution_layer(16, 32),
             create_convolution_layer(32, 64),
             create_convolution_layer(64, 128),
+            create_convolution_layer(128, 256),
         )
 
         self.flatten = nn.Flatten()

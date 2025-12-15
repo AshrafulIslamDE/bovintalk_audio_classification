@@ -120,6 +120,7 @@ dependencies = [
     { name = "streamlit" },
     { name = "torch" },
     { name = "torchaudio" },
+    { name = "torchvision" },
 ]
 
 [package.metadata]
@@ -130,6 +131,7 @@ requires-dist = [
     { name = "streamlit", specifier = ">=1.52.0" },
     { name = "torch", specifier = "==2.3.0" },
     { name = "torchaudio", specifier = "==2.3.0" },
+    { name = "torchvision", specifier = ">=0.18.0" },
 ]
 
 [[package]]
@@ -1667,6 +1669,22 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/40/d4/9eac54931e5b7b45eb80212f0aa5cb103826f9ef4a66079fbcfd10ee8e4e/torchaudio-2.3.0-cp312-cp312-manylinux1_x86_64.whl", hash = "sha256:fb3f52ed1d63b272c240d9bf051705312cb172212051b8a6a2f64d42e3cc1633", size = 3350086, upload-time = "2024-04-24T15:49:00.051Z" },
     { url = "https://files.pythonhosted.org/packages/98/59/c153039427aaeaa398e790e776f43b3341f547782893416bf006e580ca65/torchaudio-2.3.0-cp312-cp312-manylinux2014_aarch64.whl", hash = "sha256:668a8b694e5522cff28cd5e02d01aa1b75ce940aa9fb40480892bdc623b1735d", size = 1646769, upload-time = "2024-04-24T15:49:01.604Z" },
     { url = "https://files.pythonhosted.org/packages/f7/06/34addade5c69063d89d67ff810fd6197c28f93d9cf089c51d198562827b8/torchaudio-2.3.0-cp312-cp312-win_amd64.whl", hash = "sha256:6c1f538018b85d7766835d042e555de2f096f7a69bba6b16031bf42a914dd9e1", size = 2362699, upload-time = "2024-04-24T15:48:46.556Z" },
+]
+
+[[package]]
+name = "torchvision"
+version = "0.18.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "numpy" },
+    { name = "pillow" },
+    { name = "torch" },
+]
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/7c/12/49d4fd4ae7a48c6d33babb01a523594aca38365d378518320a10f9a5baa1/torchvision-0.18.0-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:eb9d83c0e1dbb54ecb0fb04c87f786333e3a6fb8b9c400aca7c31081f9aa5707", size = 1554232, upload-time = "2024-04-24T15:48:26.578Z" },
+    { url = "https://files.pythonhosted.org/packages/6d/fe/729256fec03403b0bfdc229d4350936e29020d618f1740009c6a4f995b06/torchvision-0.18.0-cp312-cp312-manylinux1_x86_64.whl", hash = "sha256:b657d052d146f24cb3b2a78219bfc82ae70a9706671c50f632528907d10cccec", size = 6955047, upload-time = "2024-04-24T15:47:57.381Z" },
+    { url = "https://files.pythonhosted.org/packages/51/2d/30883e9c6734546f9e7e0c429b76bd2b651aa25f6ced087c9c11cbf2ef41/torchvision-0.18.0-cp312-cp312-manylinux2014_aarch64.whl", hash = "sha256:a964afbc7ddf50a46b941477f6c35729b416deedd139756befd488245e2e226d", size = 13996688, upload-time = "2024-04-24T15:47:54.406Z" },
+    { url = "https://files.pythonhosted.org/packages/53/8a/864c3969af219a95213a5065d453313a96598e7c744b859e99b6ac134e16/torchvision-0.18.0-cp312-cp312-win_amd64.whl", hash = "sha256:7c770f0f748e0b17f57c0297508d7254f686cdf03fc2e2949f422b20574f4c0f", size = 1174123, upload-time = "2024-04-24T15:48:20.241Z" },
 ]
 
 [[package]]

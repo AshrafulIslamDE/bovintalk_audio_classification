@@ -11,4 +11,5 @@ dependencies = [
     "streamlit>=1.52.0",
     "torch==2.3.0",
     "torchaudio==2.3.0",
+    "torchvision>=0.18.0",
 ]

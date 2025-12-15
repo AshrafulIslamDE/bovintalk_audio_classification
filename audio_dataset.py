@@ -3,6 +3,7 @@ import torchaudio
 from torch.utils.data import Dataset
 
 from config import AUDIO_DIRS, TARGET_SAMPLE_RATE, NUM_SAMPLES
+from utils import get_device
 
 
 class AudioDataset(Dataset):
@@ -24,8 +25,10 @@ class AudioDataset(Dataset):
         signal = self._cut_dataset(signal)
         signal = self._right_pad_dataset(signal)
         signal = self.transformation(signal)
-
+        signal=signal.to(get_device())
         return signal, label
+
+
 
     def _resample_dataset(self,signal, sample_rate):
         if sample_rate != TARGET_SAMPLE_RATE:
