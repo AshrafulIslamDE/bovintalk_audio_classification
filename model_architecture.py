@@ -1,46 +1,43 @@
 import torch
 import torch.nn as nn
 
-
-def create_convolution_layer(in_channels, out_channels, padding=1, kernel_size=3,with_pooling=True):
-    layers=[ nn.Sequential(
+def create_convolution_layer(in_channels, out_channels, padding=1, kernel_size=3, with_pooling=True):
+    layers = [
         nn.Conv2d(in_channels, out_channels, kernel_size, stride=1, padding=padding),
-        nn.ReLU())]
+        nn.ReLU()
+    ]
     if with_pooling:
         layers.append(nn.MaxPool2d(kernel_size=2, stride=2))
     return nn.Sequential(*layers)
 
-
-
 class AudioCNN(nn.Module):
-    def __init__(self, input_shape=(1, 64, 42)):
-        super(AudioCNN, self).__init__()
+    def __init__(self, in_channels=1, num_classes=2):
+        super().__init__()
 
         self.conv_layers = nn.Sequential(
-            create_convolution_layer(1, 16),
+            create_convolution_layer(in_channels, 16),
             create_convolution_layer(16, 32),
             create_convolution_layer(32, 64),
             create_convolution_layer(64, 128),
             create_convolution_layer(128, 256),
         )
 
-        self.flatten = nn.Flatten()
+        # global_pool will reduce H,W to 1x1
+        self.global_pool = nn.AdaptiveAvgPool2d((1,1))
 
-        # ---------- DYNAMICALLY COMPUTE LINEAR INPUT SIZE ----------
+        # Dynamically calculate linear input size
         with torch.no_grad():
-            dummy = torch.rand(1, *input_shape)
-            x = self.conv_layers(dummy)
-            x = self.flatten(x)
-            flattened_size = x.size(1)
+            dummy_input = torch.rand(1, in_channels, 64, 42)  # arbitrary H,W
+            x = self.conv_layers(dummy_input)
+            x = self.global_pool(x)
+            flattened_size = x.view(1, -1).shape[1]
+            print(f"Linear input size: {flattened_size}")
 
-        print(f"Auto-calculated Linear Input Features: {flattened_size}")
+        self.linear = nn.Linear(flattened_size, num_classes)
 
-        self.linear = nn.Linear(flattened_size, 2)
-        self.softmax = nn.Softmax(dim=1)
-
-    def forward(self, inputs):
-        x = self.conv_layers(inputs)
-        x = self.flatten(x)
+    def forward(self, x):
+        x = self.conv_layers(x)
+        x = self.global_pool(x)
+        x = x.view(x.size(0), -1)
         logits = self.linear(x)
-        prediction = self.softmax(logits)
-        return prediction
+        return logits

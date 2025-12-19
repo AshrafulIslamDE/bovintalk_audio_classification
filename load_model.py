@@ -3,7 +3,7 @@ import torch
 import torchaudio
 
 from audio_dataset import AudioDataset
-from mel_spectogram_config import get_transformation
+from audio_dataset_transformation_config import get_transformation
 from model_architecture import AudioCNN
 
 torchaudio.set_audio_backend("ffmpeg")

@@ -4,7 +4,7 @@ from audio_dataset import AudioDataset
 from utils import get_device
 from vgg_mel_dataset import VGGMelDataset  # <-- NEW
 from config import BATCH_SIZE, LEARNING_RATE, EPOCHS, MODEL_PATH
-from mel_spectogram_config import get_transformation
+from audio_dataset_transformation_config import get_mel_transformation
 from split_dataset import split_dataset
 from torchvision import models
 import torch.nn as nn
@@ -14,8 +14,8 @@ import torch.nn as nn
 # ------------------------
 (train_files, train_labels), (val_files, val_labels), _ = split_dataset()
 
-train_audio = AudioDataset(train_files, train_labels, get_transformation())
-val_audio   = AudioDataset(val_files, val_labels, get_transformation())
+train_audio = AudioDataset(train_files, train_labels, get_mel_transformation())
+val_audio   = AudioDataset(val_files, val_labels, get_mel_transformation())
 
 # ------------------------
 # Wrap with VGG16 Dataset
