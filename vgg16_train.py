@@ -37,9 +37,9 @@ for p in model.features.parameters():
 
 # Replace classifier for 2 classes
 model.classifier[6] = nn.Linear(4096, 2)
-
-model = model.to(get_device())
-
+device=get_device()
+model = model.to(device)
+print(device)
 criterion = nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.classifier.parameters(), lr=LEARNING_RATE)
 
@@ -50,6 +50,7 @@ for epoch in range(EPOCHS):
     correct_train = 0
     for mel, label in train_loader:
         #mel = mel.unsqueeze(1)
+        label=label.to(device)
         optimizer.zero_grad()
         pred = model(mel)
         loss = criterion(pred, label)
@@ -66,6 +67,7 @@ for epoch in range(EPOCHS):
     with torch.no_grad():
         for mel, label in val_loader:
             #mel = mel.unsqueeze(1)
+            label=label.to(device)
             pred = model(mel)
             correct_val += (pred.argmax(1) == label).sum().item()
     val_acc = correct_val / len(val_dataset)

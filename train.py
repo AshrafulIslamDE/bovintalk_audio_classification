@@ -15,9 +15,10 @@ val_dataset = AudioDataset(val_files, val_labels,get_transformation())
 
 train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE)
-
+device=get_device()
+print(device)
 model = AudioCNN()
-model = model.to(get_device())
+model = model.to(device)
 criterion = torch.nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=LEARNING_RATE)
 for epoch in range(EPOCHS):
@@ -27,6 +28,7 @@ for epoch in range(EPOCHS):
     correct_train = 0
     for mel, label in train_loader:
         #mel = mel.unsqueeze(1)
+        label=label.to(device)
         optimizer.zero_grad()
         pred = model(mel)
         loss = criterion(pred, label)
@@ -43,6 +45,7 @@ for epoch in range(EPOCHS):
     with torch.no_grad():
         for mel, label in val_loader:
             #mel = mel.unsqueeze(1)
+            label = label.to(device)
             pred = model(mel)
             correct_val += (pred.argmax(1) == label).sum().item()
     val_acc = correct_val / len(val_dataset)

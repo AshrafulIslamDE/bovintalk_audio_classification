@@ -1,6 +1,9 @@
 import torch
 from torch.utils.data import Dataset
 
+from utils import get_device
+
+
 class VGGMelDataset(Dataset):
     def __init__(self, audio_dataset):
         self.audio_dataset = audio_dataset
@@ -18,5 +21,6 @@ class VGGMelDataset(Dataset):
 
         # Convert 1 → 3 channels
         mel = mel.repeat(3, 1, 1)
+        mel.to(get_device())
 
         return mel, label
