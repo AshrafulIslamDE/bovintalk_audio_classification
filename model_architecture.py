@@ -23,7 +23,7 @@ class AudioCNN(nn.Module):
         )
 
         # global_pool will reduce H,W to 1x1
-        self.global_pool = nn.AdaptiveAvgPool2d((1,1))
+        self.global_pool = nn.AdaptiveAvgPool2d((10,1))
 
         # Dynamically calculate linear input size
         with torch.no_grad():

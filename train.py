@@ -29,6 +29,7 @@ def train(transformation):
             correct_train = 0
             for mel, label in train_loader:
                 #mel = mel.unsqueeze(1)
+                label = label.to(get_device())
                 optimizer.zero_grad()
                 pred = model(mel)
                 loss = criterion(pred, label)
