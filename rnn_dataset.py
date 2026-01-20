@@ -19,7 +19,7 @@ class LSTMAudioDataset(AudioDataset):
         num_frames = info.num_frames
         sample_rate = info.sample_rate
         duration_sec = num_frames / sample_rate
-        print(f"Duration: {duration_sec:.3f} seconds")
+        #print(f"Duration: {duration_sec:.3f} seconds")
 
         # Load raw signal
         signal, sr = torchaudio.load(filepath)

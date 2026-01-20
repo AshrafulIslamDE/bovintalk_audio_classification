@@ -2,10 +2,13 @@ import torch.nn as nn
 import torch
 
 class RNN_LSTM(nn.Module):
-    def __init__(self,hidden_size=128, input_size=104,num_classes=2):
+    def __init__(self,hidden_size=128, input_size=104,num_classes=2,num_layers=2):
         super().__init__()
-        self.lstm=nn.LSTM(input_size=input_size,hidden_size=hidden_size,num_layers=1,batch_first=True)
+        self.num_layers =num_layers
+        self.hidden_size = hidden_size
+        self.lstm=nn.LSTM(input_size=input_size,hidden_size=hidden_size,num_layers=num_layers,batch_first=True)
         self.fc=nn.Linear(in_features=hidden_size,out_features=num_classes)
+
 
     def forward(self, input):
         batch_size, seq_len, window_size,mfcc=input.size()

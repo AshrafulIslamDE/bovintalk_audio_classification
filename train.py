@@ -6,6 +6,7 @@ from config import BATCH_SIZE, LEARNING_RATE, EPOCHS, MODEL_PATH
 from audio_dataset_transformation_config import get_mel_transformation, get_mfcc_transformation, \
     get_rnn_mfcc_transformation
 from model_architecture import AudioCNN
+from rnn_dataset import LSTMAudioDataset
 from rnn_model_architecture import RNN_LSTM
 from split_dataset import split_dataset
 from utils import get_device
@@ -31,8 +32,8 @@ def train(transformation,collate_fn=None,model:nn.Module=AudioCNN()):
         # Load split datasets
         (train_files, train_labels), (val_files, val_labels), _ = split_dataset()
 
-        train_dataset = AudioDataset(train_files, train_labels,transformation)
-        val_dataset = AudioDataset(val_files, val_labels,transformation)
+        train_dataset = LSTMAudioDataset(train_files, train_labels,transformation)
+        val_dataset = LSTMAudioDataset(val_files, val_labels,transformation)
 
         train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True,collate_fn=collate_fn)
         val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE,collate_fn=collate_fn)
@@ -75,6 +76,6 @@ def train(transformation,collate_fn=None,model:nn.Module=AudioCNN()):
 if __name__ == '__main__':
      #train(get_mel_transformation())
      #train(get_mfcc_transformation())
-     train(get_rnn_mfcc_transformation(),model=RNN_LSTM())
+     train(get_rnn_mfcc_transformation(),model=RNN_LSTM(),collate_fn=collate_fn)
 
 
