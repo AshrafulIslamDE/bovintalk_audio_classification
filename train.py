@@ -1,13 +1,12 @@
 import torch
 from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import DataLoader
-from audio_dataset import AudioDataset
 from config import BATCH_SIZE, LEARNING_RATE, EPOCHS, MODEL_PATH
 from audio_dataset_transformation_config import get_mel_transformation, get_mfcc_transformation, \
     get_rnn_mfcc_transformation
 from model_architecture import AudioCNN
 from rnn_dataset import LSTMAudioDataset
-from rnn_model_architecture import RNN_LSTM
+from rnn_model_architecture import RNN_LSTM, RNN_BiLSTM, RNN_GRU, RNN_Vanilla
 from split_dataset import split_dataset
 from utils import get_device
 import torch.nn as nn
@@ -76,6 +75,6 @@ def train(transformation,collate_fn=None,model:nn.Module=AudioCNN()):
 if __name__ == '__main__':
      #train(get_mel_transformation())
      #train(get_mfcc_transformation())
-     train(get_rnn_mfcc_transformation(),model=RNN_LSTM(),collate_fn=collate_fn)
+     train(get_rnn_mfcc_transformation(),model=RNN_Vanilla(),collate_fn=collate_fn)
 
 
