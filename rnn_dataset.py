@@ -78,7 +78,6 @@ class AudioDatasetSpectogram(AudioDataset):
        signal = self._mix_down_dataset(signal)
        signal= self._cut_dataset(signal)
        signal=self._right_pad_dataset(signal)
-
        signal = self.transformation(signal)
        signal=signal.squeeze(0).transpose(0, 1)
        return signal, label

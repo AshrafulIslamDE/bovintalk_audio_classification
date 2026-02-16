@@ -31,6 +31,8 @@ def collate_fn(batch):
     padded_signals = pad_sequence(signals, batch_first=True, padding_value=0)
 
     labels = torch.tensor(labels)
+    padded_signals=padded_signals.to(device)
+    labels.to(device)
     return padded_signals, labels
 
 def train(train_dataloader:DataLoader,val_dataloader:DataLoader, model:nn.Module=AudioCNN()):
@@ -65,6 +67,7 @@ def train(train_dataloader:DataLoader,val_dataloader:DataLoader, model:nn.Module
             with torch.no_grad():
                 for mel, label in val_dataloader:
                     #mel = mel.unsqueeze(1)
+                    label=label.to(device)
                     pred = model(mel)
                     predicted = pred.argmax(1)
                     correct_val += (predicted .eq(label) ).sum().item()
@@ -110,6 +113,7 @@ def get_dataloader(transformation,collate_fn=None,dataset_class=AudioDataset):
 if __name__ == '__main__':
      #train(get_mel_transformation())
      #train(get_mfcc_transformation())
+
      train(*get_dataloader(get_mel_transformation(),collate_fn=collate_fn,
                           dataset_class=AudioDatasetSpectogram),model=RNN_GRU_Spectogram(input_size=N_MELS))
      draw_f1_score()
