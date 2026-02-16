@@ -10,4 +10,4 @@ wheels/
 .venv
 
 .idea
-hfc_lfc_cnn.pth
+*.pth

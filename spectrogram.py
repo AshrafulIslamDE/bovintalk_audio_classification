@@ -17,7 +17,7 @@ if __name__ == '__main__':
         # --- 3. Generate Spectrogram ---
         files, labels = load_all_files()
         audio = AudioDataset(files, labels, mel_transform)
-        signal,label = audio[1]
+        signal,label = audio[10]
 
         # generate spectogram
         signal_np = signal.squeeze()  # removes the channel dimension

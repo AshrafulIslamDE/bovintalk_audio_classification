@@ -2,7 +2,9 @@ import torch
 import torchaudio
 from torch.utils.data import Dataset
 
+from audio_dataset_transformation_config import get_rnn_mfcc_transformation, get_mel_transformation
 from config import AUDIO_DIRS, TARGET_SAMPLE_RATE, NUM_SAMPLES
+from split_dataset import split_dataset
 from utils import get_device
 
 
@@ -57,7 +59,11 @@ class AudioDataset(Dataset):
 
 
 if __name__ == '__main__':
-     print("testing audio dataset")
+    (train_files, train_labels), _, _ = split_dataset()
+    train_data_set = AudioDataset(train_files, train_labels, get_mel_transformation())
+    for i in range(11):
+        item, label = train_data_set[i]
+        print(item.shape)
 
 
 
