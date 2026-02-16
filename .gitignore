@@ -12,3 +12,6 @@ wheels/
 .idea
 *.pth
 models/
+plot_data/
+plots/
+logs/

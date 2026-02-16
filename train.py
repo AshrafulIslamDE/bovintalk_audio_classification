@@ -5,14 +5,16 @@ from torch.utils.data import DataLoader
 import torch.nn as nn
 from sklearn.metrics import f1_score
 import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Agg')
 from torch.utils.data import random_split
 import os
+import json
 
 # Your custom imports
 from audio_dataset import AudioDataset
 from config import BATCH_SIZE, LEARNING_RATE, EPOCHS, N_MELS, TRAIN_RATIO, VAL_RATIO, TEST_RATIO, SEED
 from audio_dataset_transformation_config import get_mel_transformation
-from model_architecture import AudioCNN
 from rnn_dataset import AudioDatasetSpectogram
 from rnn_model_architecture_for_spectrum import RNN_Spectogram, LSTM_Spectogram, GRU_Spectogram, \
     BiLSTM_Spectogram
@@ -109,26 +111,29 @@ def train(train_dataloader: DataLoader, val_dataloader: DataLoader, model: nn.Mo
 
 
 def draw_f1_score(model_name):
+    os.makedirs("plots", exist_ok=True)
+    os.makedirs("plot_data", exist_ok=True)
+
+    # --- 1. Save the actual Image ---
     plt.figure(figsize=(8, 5))
-
-    # Plotting the scores with a label for the legend
     plt.plot(range(1, EPOCHS + 1), f1_scores, marker='o', color='b', label='F1 Score')
-
     plt.title(f"F1 Score per Epoch - {model_name}")
     plt.xlabel("Epoch")
     plt.ylabel("F1 Score")
-
-    # Mention F1 Score inside the diagram via legend
     plt.legend(loc='lower right')
-
     plt.xticks(range(1, EPOCHS + 1))
     plt.ylim(0, 1)
-
-    # Only show horizontal grid lines (no vertical lines for epochs)
     plt.grid(True, axis='y', linestyle='--', alpha=0.7)
 
-    plt.tight_layout()
-    plt.show()
+    plot_path = os.path.join("plots", f"{model_name}_f1_plot.png")
+    plt.savefig(plot_path)
+    plt.close()  # Close figure to free up memory
+    print(f"Plot image saved to: {plot_path}")
+
+    # --- 2. Save Raw Data for later use in IDE ---
+    data_path = os.path.join("plot_data", f"{model_name}_f1_values.json")
+    with open(data_path, 'w') as f:json.dump(f1_scores, f)
+    print(f"Raw F1 data saved to: {data_path}")
 
 
 def get_dataloader(transformation, collate_fn=None, dataset_class=AudioDataset):
@@ -142,6 +147,7 @@ def get_dataloader(transformation, collate_fn=None, dataset_class=AudioDataset):
 
 
 if __name__ == '__main__':
+    print(f" executing device: {device}")
     model_classes = [
         RNN_Spectogram,
         LSTM_Spectogram,
