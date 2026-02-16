@@ -1,7 +1,5 @@
 import torchaudio
-import matplotlib.pyplot as plt  # Import for plotting
-import os  # Import for file path checking
-
+import matplotlib.pyplot as plt
 from audio_dataset import AudioDataset
 from config import TARGET_SAMPLE_RATE, N_FFT, HOP_LENGTH, N_MELS
 from split_dataset import load_all_files

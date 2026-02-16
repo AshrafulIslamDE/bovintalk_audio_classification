@@ -11,3 +11,4 @@ wheels/
 
 .idea
 *.pth
+models/
