@@ -1,6 +1,6 @@
 import torchaudio
 import matplotlib.pyplot as plt
-from audio_dataset import AudioDataset
+from dataset.audio_dataset import AudioDataset
 from config import TARGET_SAMPLE_RATE, N_FFT, HOP_LENGTH, N_MELS
 from split_dataset import load_all_files
 

@@ -1,8 +1,8 @@
 import torch
 from torch.utils.data import DataLoader
-from audio_dataset import AudioDataset
+from dataset.audio_dataset import AudioDataset
 from utils import get_device
-from vgg_mel_dataset import VGGMelDataset  # <-- NEW
+from dataset.vgg_mel_dataset import VGGMelDataset  # <-- NEW
 from config import BATCH_SIZE, LEARNING_RATE, EPOCHS, MODEL_PATH
 from audio_dataset_transformation_config import get_mel_transformation
 from split_dataset import split_dataset

@@ -1,8 +1,22 @@
+from pathlib import Path
+
 # Global configuration used by all scripts
+def get_project_root():
+    current = Path(__file__).resolve().parent
+    print("enter path file ")
+    while current != current.parent:
+        if (current / "data").exists():
+            return current
+        current = current.parent
+
+    raise FileNotFoundError("Could not find 'data' directory in any parent folder.")
+
+
+PROJECT_ROOT = get_project_root()
 
 AUDIO_DIRS = {
-    "HFC": "data/HFC_audio",
-    "LFC": "data/LFC_audio"
+    "HFC": PROJECT_ROOT / "data" / "HFC_audio",
+    "LFC": PROJECT_ROOT / "data" / "LFC_audio"
 }
 
 # Audio processing
@@ -37,9 +51,9 @@ LEARNING_RATE = 0.0001
 MODEL_PATH = "hfc_lfc_cnn.pth"
 
 # Split ratio
-TRAIN_RATIO = 0.75
+TRAIN_RATIO = 0.80
 VAL_RATIO = 0.10
-TEST_RATIO = 0.15
+TEST_RATIO = 0.10
 
 # Random seed
 SEED = 42

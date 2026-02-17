@@ -1,7 +1,7 @@
 
-from audio_dataset import AudioDataset
-from audio_dataset_transformation_config import get_rnn_mfcc_transformation, get_mel_transformation, get_mfcc_transformation
-from config import RNN_SAMPLES_PER_FRAME, RNN_WINDOWS_PER_FRAME, RNN_N_FFT, RNN_HOP_LENGTH, RNN_TARGET_SAMPLE_RATE
+from dataset.audio_dataset import AudioDataset
+from audio_dataset_transformation_config import get_mfcc_transformation
+from config import RNN_SAMPLES_PER_FRAME, RNN_WINDOWS_PER_FRAME, RNN_N_FFT, RNN_HOP_LENGTH
 from split_dataset import split_dataset
 import torchaudio
 import torch

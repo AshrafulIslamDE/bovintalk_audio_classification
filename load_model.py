@@ -2,9 +2,9 @@ import streamlit as st
 import torch
 import torchaudio
 
-from audio_dataset import AudioDataset
+from dataset.audio_dataset import AudioDataset
 from audio_dataset_transformation_config import get_transformation
-from model_architecture import AudioCNN
+from model_architecture.model_architecture import AudioCNN
 
 torchaudio.set_audio_backend("ffmpeg")
 

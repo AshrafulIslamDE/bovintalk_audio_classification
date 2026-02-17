@@ -1,6 +1,6 @@
 import torch
 from torch.utils.data import DataLoader
-from audio_dataset import AudioDataset
+from dataset.audio_dataset import AudioDataset
 from model_architecture import AudioCNN
 from split_dataset import split_dataset
 from config import BATCH_SIZE, MODEL_PATH

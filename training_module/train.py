@@ -6,26 +6,18 @@ import torch.nn as nn
 from sklearn.metrics import f1_score
 import matplotlib.pyplot as plt
 import matplotlib
+
 matplotlib.use('Agg')
-from torch.utils.data import random_split
 import os
 import json
 
-# Your custom imports
-from audio_dataset import AudioDataset
-from config import BATCH_SIZE, LEARNING_RATE, EPOCHS, N_MELS, TRAIN_RATIO, VAL_RATIO, TEST_RATIO, SEED
-from audio_dataset_transformation_config import get_mel_transformation
-from rnn_dataset import AudioDatasetSpectogram
-from rnn_model_architecture_for_spectrum import RNN_Spectogram, LSTM_Spectogram, GRU_Spectogram, \
-    BiLSTM_Spectogram
-from split_dataset import load_all_files
+from config import  LEARNING_RATE, EPOCHS, N_MELS
 from utils import get_device
 
 device = get_device()
 f1_scores = []
 
-os.makedirs("models", exist_ok=True)
-os.makedirs("logs", exist_ok=True)
+
 
 def collate_fn(batch):
     batch.sort(key=lambda x: x[0].shape[0], reverse=True)
@@ -93,6 +85,8 @@ def train(train_dataloader: DataLoader, val_dataloader: DataLoader, model: nn.Mo
               f"Train Acc: {train_acc * 100:.2f}% | Val Acc: {val_acc * 100:.2f}% | "
               f"F1 Score: {f1:.4f} ")
 
+    os.makedirs("models", exist_ok=True)
+    os.makedirs("logs", exist_ok=True)
     # --- SAVE MODEL FILE ---
     timestamp = datetime.datetime.now().strftime("%Y_%m_%d")
     model_filename = (f"{EPOCHS}_{final_train_acc * 100:.1f}_{final_val_acc * 100:.1f}_"
@@ -134,44 +128,7 @@ def draw_f1_score(model_name):
     data_path = os.path.join("plot_data", f"{model_name}_f1_values.json")
     with open(data_path, 'w') as f:json.dump(f1_scores, f)
     print(f"Raw F1 data saved to: {data_path}")
+    f1_scores.clear()
 
 
-def get_dataloader(transformation, collate_fn=None, dataset_class=AudioDataset):
-    files, labels = load_all_files()
-    dataset = dataset_class(files, labels, transformation)
-    generator = torch.Generator().manual_seed(SEED)
-    train_dataset, val_dataset, _ = random_split(dataset, [TRAIN_RATIO, VAL_RATIO, TEST_RATIO], generator)
-    train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, collate_fn=collate_fn)
-    val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, collate_fn=collate_fn)
-    return train_loader, val_loader
 
-
-if __name__ == '__main__':
-    print(f" executing device: {device}")
-    model_classes = [
-        RNN_Spectogram,
-        LSTM_Spectogram,
-        BiLSTM_Spectogram,
-        GRU_Spectogram
-    ]
-
-    for model_class in model_classes:
-        curr_model_name = model_class.__name__
-        print(f"\n--- Starting Training: {curr_model_name} ---")
-
-        f1_scores = []  # Reset for each model architecture
-
-        train_loader, val_loader = get_dataloader(
-            get_mel_transformation(),
-            collate_fn=collate_fn,
-            dataset_class=AudioDatasetSpectogram
-        )
-
-        train(
-            train_loader,
-            val_loader,
-            model=model_class(input_size=N_MELS),
-            model_name_str=curr_model_name
-        )
-
-        draw_f1_score(curr_model_name)
