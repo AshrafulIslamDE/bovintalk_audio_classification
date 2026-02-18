@@ -62,23 +62,10 @@ class LSTMAudioDataset(AudioDataset):
             return signal[:, :target]
         return torch.nn.functional.pad(signal, (0, target - length))
 
-class AudioDatasetSpectogram(AudioDataset):
+class AudioDatasetOfSpectogramAndMFCCForRNN(AudioDataset):
     def __getitem__(self, idx):
-
-
-       filepath = self.files[idx]
-       label = self.labels[idx]
-
-
-    # Load raw signal
-       signal, sr = torchaudio.load(filepath)
-
-    # 1. Preprocess specifically for LSTM
-       signal = self._resample_dataset(signal, sr)
-       signal = self._mix_down_dataset(signal)
-       signal= self._cut_dataset(signal)
-       signal=self._right_pad_dataset(signal)
-       signal = self.transformation(signal)
+       signal, label = super().__getitem__(idx)
+        #Transpose for RNN
        signal=signal.squeeze(0).transpose(0, 1)
        return signal, label
 
@@ -86,7 +73,7 @@ class AudioDatasetSpectogram(AudioDataset):
 
 if __name__ == '__main__':
     (train_files, train_labels), _,_ = split_dataset()
-    train_data_set=AudioDatasetSpectogram(train_files,train_labels,get_mfcc_transformation())
+    train_data_set=AudioDatasetOfSpectogramAndMFCCForRNN(train_files, train_labels, get_mfcc_transformation())
     for i in range(11):
         item,label=train_data_set[i]
         print(item.shape)

@@ -3,7 +3,7 @@ import torch
 
 from config import INPUT_SIZE, N_MELS
 
-class RNN_Spectogram(nn.Module):
+class RNN(nn.Module):
     def __init__(self, hidden_size=128, input_size=N_MELS, num_classes=2, num_layers=2):
         super().__init__()
         self.num_layers = num_layers
@@ -30,7 +30,7 @@ class RNN_Spectogram(nn.Module):
         out = self.fc(last_hidden)
         return out
 
-class LSTM_Spectogram(nn.Module):
+class LSTM(nn.Module):
     def __init__(self,hidden_size=128, input_size=N_MELS,num_classes=2,num_layers=2):
         super().__init__()
         self.num_layers =num_layers
@@ -49,7 +49,7 @@ class LSTM_Spectogram(nn.Module):
         return out
 
 
-class BiLSTM_Spectogram(nn.Module):
+class BiLSTM(nn.Module):
     def __init__(self, hidden_size=128, input_size=N_MELS, num_classes=2, num_layers=2):
         super().__init__()
         self.num_layers = num_layers
@@ -86,7 +86,7 @@ class BiLSTM_Spectogram(nn.Module):
         return out
 
 
-class GRU_Spectogram(nn.Module):
+class GRU(nn.Module):
         def __init__(self, hidden_size=128, input_size=INPUT_SIZE, num_classes=2, num_layers=2):
             super().__init__()
             self.num_layers = num_layers
