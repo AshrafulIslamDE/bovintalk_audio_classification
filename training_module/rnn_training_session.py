@@ -33,5 +33,5 @@ def rnn_spectrogram_training_setup(transformation, input_size,input_feature_name
 
         draw_f1_score(curr_model_name)
 if __name__ == "__main__":
-    #rnn_spectrogram_training_setup(get_mel_transformation(), N_MELS)
+    rnn_spectrogram_training_setup(get_mel_transformation(), N_MELS)
     rnn_spectrogram_training_setup(get_mfcc_transformation(), N_MFCC,"MFCC")

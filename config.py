@@ -44,7 +44,7 @@ INPUT_SIZE = RNN_N_MFCC*RNN_WINDOWS_PER_FRAME
 
 # Training
 BATCH_SIZE = 32
-EPOCHS = 1000
+EPOCHS = 500
 LEARNING_RATE = 0.0001
 
 # Model save path
@@ -56,5 +56,6 @@ VAL_RATIO = 0.10
 TEST_RATIO = 0.10
 
 # Random seed
+
 SEED = 42
 
