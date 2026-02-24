@@ -4,6 +4,14 @@ from config import TARGET_SAMPLE_RATE, N_FFT, HOP_LENGTH, N_MELS, N_MFCC, RNN_TA
     RNN_HOP_LENGTH, RNN_N_MELS
 
 
+def get_spectrogram_transformation():
+    mel_transform = torchaudio.transforms.Spectrogram(
+        n_fft=N_FFT,
+        hop_length=HOP_LENGTH,
+        power=2
+    )
+    return mel_transform
+
 def get_mel_transformation():
     mel_transform = torchaudio.transforms.MelSpectrogram(
         sample_rate=TARGET_SAMPLE_RATE,

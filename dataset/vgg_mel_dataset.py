@@ -21,6 +21,5 @@ class VGGMelDataset(Dataset):
 
         # Convert 1 → 3 channels
         mel = mel.repeat(3, 1, 1)
-        mel.to(get_device())
 
         return mel, label
