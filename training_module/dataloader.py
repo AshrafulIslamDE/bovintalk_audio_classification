@@ -12,7 +12,6 @@ def get_dataloader(transformation, collate_fn=None, dataset_class=AudioDataset):
     dataset = dataset_class(files, labels, transformation)
     generator = torch.Generator().manual_seed(SEED)
     dataset_length=len(dataset)
-    print(f"Dataset length: {dataset_length}")
     test_dataset_length=dataset_length- (int(dataset_length*TRAIN_RATIO)+int(dataset_length*VAL_RATIO))
     split_dataset_length=[int(dataset_length*TRAIN_RATIO), int(dataset_length*VAL_RATIO), test_dataset_length]
     train_dataset, val_dataset, _ = random_split(dataset, split_dataset_length, generator)
