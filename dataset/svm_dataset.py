@@ -6,7 +6,7 @@ import torch
 from dataset.audio_dataset import AudioDataset
 
 
-class AudioDatasetForSVM(AudioDataset):
+class AudioDatasetForTraditionalMLAlgo(AudioDataset):
     def __getitem__(self, idx):
         # Get the standard transformed signal [1, Freq, Time]
         signal, label = super().__getitem__(idx)
