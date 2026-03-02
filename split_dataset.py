@@ -1,5 +1,4 @@
 import torch
-import os
 from config import TRAIN_RATIO, VAL_RATIO, TEST_RATIO, SEED, AUDIO_DIRS
 
 def load_all_files():
@@ -17,6 +16,48 @@ def load_all_files():
             if file.suffix.lower() in [".wav", ".mp3", ".flac", ".m4a", ".ogg", ".wma"]:
                 files.append(str(file))
                 labels.append(label_idx)
+
+    return files, labels
+
+
+import random
+
+
+def load_all_files_balanced():
+    files = []
+    labels = []
+
+    # Store files by category first to calculate the gap
+    categorized_files = {"HFC": [], "LFC": []}
+
+    for label_name, folder_path in AUDIO_DIRS.items():
+        if not folder_path.exists():
+            continue
+        for file in folder_path.iterdir():
+            if file.suffix.lower() in [".wav", ".mp3", ".flac", ".m4a"]:
+                categorized_files[label_name].append(str(file))
+
+    hfc_count = len(categorized_files["HFC"])  # 952
+    lfc_count = len(categorized_files["LFC"])  # 192
+
+    # 1. Add all HFC files as is
+    files.extend(categorized_files["HFC"])
+    labels.extend([0] * hfc_count)
+
+    # 2. Add all original LFC files
+    files.extend(categorized_files["LFC"])
+    labels.extend([1] * lfc_count)
+
+    # 3. Calculate how many augmented samples we need for LFC
+    gap = hfc_count - lfc_count
+
+    print(f"Balancing dataset... Adding {gap} augmented samples to LFC.")
+
+    # Randomly pick from existing LFC files and duplicate them until the gap is filled
+    for _ in range(gap):
+        random_file = random.choice(categorized_files["LFC"])
+        files.append(random_file)
+        labels.append(1)
 
     return files, labels
 
