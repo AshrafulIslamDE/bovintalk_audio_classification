@@ -58,8 +58,6 @@ def start_training(model:nn.Module,transformation:nn.Module, model_name:str)->No
         model_name_str=model_name
     )
 
-    draw_f1_score(model_name)
-
 if __name__=="__main__":
     model_list=prepare_model()
     for model in model_list:

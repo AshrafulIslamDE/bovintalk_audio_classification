@@ -1,23 +1,28 @@
 import datetime
+
 import torch
 from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import DataLoader
 import torch.nn as nn
-from sklearn.metrics import f1_score
+
 import matplotlib.pyplot as plt
 import matplotlib
 
-matplotlib.use('Agg')
 import os
 import json
+import numpy as np
 
 from config import  LEARNING_RATE, EPOCHS, N_MELS
+from training_module.training_visualization import draw_confusion_matrix, draw_f1_score
 from utils import get_device
 
+from sklearn.metrics import precision_score, recall_score, confusion_matrix
+from sklearn.metrics import f1_score
+
+# to support backend plotting (https://matplotlib.org/stable/users/explain/figure/backends.html)
+matplotlib.use('Agg')
+# to access GPU or CPU
 device = get_device()
-f1_scores = []
-
-
 
 def collate_fn(batch):
     batch.sort(key=lambda x: x[0].shape[0], reverse=True)
@@ -37,7 +42,7 @@ def train(train_dataloader: DataLoader, val_dataloader: DataLoader, model: nn.Mo
     final_train_acc = 0
     final_val_acc = 0
     final_f1 = 0
-
+    f1_scores = []
     for epoch in range(EPOCHS):
         model.train()
         running_loss = 0
@@ -74,23 +79,38 @@ def train(train_dataloader: DataLoader, val_dataloader: DataLoader, model: nn.Mo
                 all_preds.extend(predicted.cpu().numpy())
                 all_labels.extend(label.cpu().numpy())
 
-        val_acc = correct_val / len(val_dataloader.dataset)
+        val_acc = (np.array(all_preds) == np.array(all_labels)).mean()
+
+        # ----- F1 score calculation -----
         f1 = f1_score(all_labels, all_preds, average='weighted')
         f1_scores.append(f1)
+
+        # ----- Precision, Recall calculation ----
+        precision = precision_score(all_labels, all_preds, average='weighted', zero_division=0)
+        recall = recall_score(all_labels, all_preds, average='weighted', zero_division=0)
 
         # Update final metrics for saving
         final_train_acc, final_val_acc, final_f1 = train_acc, val_acc, f1
 
         print(f"Epoch {epoch + 1}/{EPOCHS} | Loss: {running_loss:.4f} | "
               f"Train Acc: {train_acc * 100:.2f}% | Val Acc: {val_acc * 100:.2f}% | "
-              f"F1 Score: {f1:.4f} ")
+              f"Precision: {precision:.4f} | Recall: {recall:.4f} | F1: {f1:.4f} ")
 
+
+    # ----Generate Confusion Matrix --------
+    cm = confusion_matrix(all_labels, all_preds)
+    draw_confusion_matrix(cm, model_name_str)
+
+    draw_f1_score(model_name=model_name_str,f1_scores=f1_scores)
+
+    # --- SAVE MODEL FILE ---
     os.makedirs("models", exist_ok=True)
     os.makedirs("logs", exist_ok=True)
-    # --- SAVE MODEL FILE ---
+
     timestamp = datetime.datetime.now().strftime("%Y_%m_%d")
     model_filename = (f"{EPOCHS}_{final_train_acc * 100:.1f}_{final_val_acc * 100:.1f}_"
                       f"{final_f1:.3f}_{timestamp}_{model_name_str}_{LEARNING_RATE}.pth")
+
     model_save_path = os.path.join("models", model_filename)  # models/filename.pth
     torch.save(model.state_dict(), model_save_path)
     print(f"Model saved to: {model_save_path}")
@@ -104,31 +124,7 @@ def train(train_dataloader: DataLoader, val_dataloader: DataLoader, model: nn.Mo
         f.write(log_entry)
 
 
-def draw_f1_score(model_name):
-    os.makedirs("plots", exist_ok=True)
-    os.makedirs("plot_data", exist_ok=True)
 
-    # --- 1. Save the actual Image ---
-    plt.figure(figsize=(8, 5))
-    plt.plot(range(1, EPOCHS + 1), f1_scores, marker='o', color='b', label='F1 Score')
-    plt.title(f"F1 Score per Epoch - {model_name}")
-    plt.xlabel("Epoch")
-    plt.ylabel("F1 Score")
-    plt.legend(loc='lower right')
-    plt.xticks(range(1, EPOCHS + 1))
-    plt.ylim(0, 1)
-    plt.grid(True, axis='y', linestyle='--', alpha=0.7)
-
-    plot_path = os.path.join("plots", f"{model_name}_f1_plot.png")
-    plt.savefig(plot_path)
-    plt.close()  # Close figure to free up memory
-    print(f"Plot image saved to: {plot_path}")
-
-    # --- 2. Save Raw Data for later use in IDE ---
-    data_path = os.path.join("plot_data", f"{model_name}_f1_values.json")
-    with open(data_path, 'w') as f:json.dump(f1_scores, f)
-    print(f"Raw F1 data saved to: {data_path}")
-    f1_scores.clear()
 
 
 

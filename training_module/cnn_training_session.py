@@ -20,7 +20,6 @@ def cnn_training_setup(transformation,curr_model_name):
             model_name_str=curr_model_name
         )
 
-        draw_f1_score(curr_model_name)
 
 if __name__ == "__main__":
     #rnn_spectrogram_training_setup(get_mel_transformation(), N_MELS)
