@@ -22,6 +22,7 @@ from sklearn.metrics import f1_score
 matplotlib.use('Agg')
 # to access GPU or CPU
 device = get_device()
+print('Using device:', device)
 
 def collate_fn(batch):
     batch.sort(key=lambda x: x[0].shape[0], reverse=True)
@@ -117,7 +118,7 @@ def train(train_dataloader: DataLoader, val_dataloader: DataLoader, model: nn.Mo
     # --- WRITE TO CENTRAL LOG FILE ---
     log_entry = (f"Model: {model_name_str} | Epochs: {config.EPOCHS} | "
                  f"Train Acc: {final_train_acc * 100:.2f}% | Val Acc: {final_val_acc * 100:.2f}% | "
-                 f"F1 Score: {final_f1:.4f} | Timestamp: {timestamp}\n")
+                 f"Precision: {precision:.4f} | Recall: {recall:.4f} | F1: {f1:.4f} | Timestamp: {timestamp}\n")
     log_path = os.path.join("logs", "all_models_summary.txt")
     with open(log_path, "a") as f:
         f.write(log_entry)
