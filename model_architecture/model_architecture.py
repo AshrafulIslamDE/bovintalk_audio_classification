@@ -30,7 +30,6 @@ class AudioCNN(nn.Module):
             x = self.conv_layers(dummy_input)
             x = self.global_pool(x)
             flattened_size = x.view(1, -1).shape[1]
-            print(f"Linear input size: {flattened_size}")
 
         self.linear = nn.Linear(flattened_size, num_classes)
 

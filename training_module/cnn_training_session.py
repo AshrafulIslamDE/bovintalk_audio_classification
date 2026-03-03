@@ -3,6 +3,8 @@ from dataset.audio_dataset import AudioDataset
 from model_architecture.model_architecture import AudioCNN
 from training_module.dataloader import get_dataloader
 from training_module.train import draw_f1_score, train, collate_fn
+from training_module.training_config_utils import update_config_from_args
+
 
 def cnn_training_setup(transformation,curr_model_name):
 
@@ -22,6 +24,6 @@ def cnn_training_setup(transformation,curr_model_name):
 
 
 if __name__ == "__main__":
-    #rnn_spectrogram_training_setup(get_mel_transformation(), N_MELS)
+    update_config_from_args()
     cnn_training_setup(get_mfcc_transformation(),"CNN_MFCC")
-    cnn_training_setup(get_mel_transformation(),"CNN_Spectrogram")
+    cnn_training_setup(get_mel_transformation(),"CNN_Mel_Spectrogram")

@@ -4,7 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import os
 
-from config import EPOCHS
+import config
 
 
 def draw_confusion_matrix(cm, model_name, class_names=None):
@@ -34,12 +34,12 @@ def draw_f1_score(model_name, f1_scores):
 
         # --- 1. Save the actual Image ---
         plt.figure(figsize=(8, 5))
-        plt.plot(range(1, EPOCHS + 1), f1_scores, marker='o', color='b', label='F1 Score')
+        plt.plot(range(1, config.EPOCHS + 1), f1_scores, marker='o', color='b', label='F1 Score')
         plt.title(f"F1 Score per Epoch - {model_name}")
         plt.xlabel("Epoch")
         plt.ylabel("F1 Score")
         plt.legend(loc='lower right')
-        plt.xticks(range(1, EPOCHS + 1))
+        plt.xticks(range(1, config.EPOCHS + 1))
         plt.ylim(0, 1)
         plt.grid(True, axis='y', linestyle='--', alpha=0.7)
 

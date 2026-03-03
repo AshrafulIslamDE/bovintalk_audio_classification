@@ -5,14 +5,13 @@ from torch.nn.utils.rnn import pad_sequence
 from torch.utils.data import DataLoader
 import torch.nn as nn
 
-import matplotlib.pyplot as plt
 import matplotlib
 
 import os
-import json
 import numpy as np
 
-from config import  LEARNING_RATE, EPOCHS, N_MELS
+import config
+from training_module.training_config_utils import get_optimizer
 from training_module.training_visualization import draw_confusion_matrix, draw_f1_score
 from utils import get_device
 
@@ -37,13 +36,13 @@ def collate_fn(batch):
 def train(train_dataloader: DataLoader, val_dataloader: DataLoader, model: nn.Module, model_name_str: str):
     model = model.to(device)
     criterion = torch.nn.CrossEntropyLoss()
-    optimizer = torch.optim.SGD(model.parameters(), lr=LEARNING_RATE)
+    optimizer = get_optimizer(model)
 
     final_train_acc = 0
     final_val_acc = 0
     final_f1 = 0
     f1_scores = []
-    for epoch in range(EPOCHS):
+    for epoch in range(config.EPOCHS):
         model.train()
         running_loss = 0
         correct_train = 0
@@ -92,7 +91,7 @@ def train(train_dataloader: DataLoader, val_dataloader: DataLoader, model: nn.Mo
         # Update final metrics for saving
         final_train_acc, final_val_acc, final_f1 = train_acc, val_acc, f1
 
-        print(f"Epoch {epoch + 1}/{EPOCHS} | Loss: {running_loss:.4f} | "
+        print(f"Epoch {epoch + 1}/{config.EPOCHS} | Loss: {running_loss:.4f} | "
               f"Train Acc: {train_acc * 100:.2f}% | Val Acc: {val_acc * 100:.2f}% | "
               f"Precision: {precision:.4f} | Recall: {recall:.4f} | F1: {f1:.4f} ")
 
@@ -108,15 +107,15 @@ def train(train_dataloader: DataLoader, val_dataloader: DataLoader, model: nn.Mo
     os.makedirs("logs", exist_ok=True)
 
     timestamp = datetime.datetime.now().strftime("%Y_%m_%d")
-    model_filename = (f"{EPOCHS}_{final_train_acc * 100:.1f}_{final_val_acc * 100:.1f}_"
-                      f"{final_f1:.3f}_{timestamp}_{model_name_str}_{LEARNING_RATE}.pth")
+    model_filename = (f"{config.EPOCHS}_{final_train_acc * 100:.1f}_{final_val_acc * 100:.1f}_"
+                      f"{final_f1:.3f}_{timestamp}_{model_name_str}_{config.LEARNING_RATE}.pth")
 
     model_save_path = os.path.join("models", model_filename)  # models/filename.pth
     torch.save(model.state_dict(), model_save_path)
     print(f"Model saved to: {model_save_path}")
 
     # --- WRITE TO CENTRAL LOG FILE ---
-    log_entry = (f"Model: {model_name_str} | Epochs: {EPOCHS} | "
+    log_entry = (f"Model: {model_name_str} | Epochs: {config.EPOCHS} | "
                  f"Train Acc: {final_train_acc * 100:.2f}% | Val Acc: {final_val_acc * 100:.2f}% | "
                  f"F1 Score: {final_f1:.4f} | Timestamp: {timestamp}\n")
     log_path = os.path.join("logs", "all_models_summary.txt")

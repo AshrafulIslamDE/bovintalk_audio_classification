@@ -51,7 +51,7 @@ def load_all_files_balanced():
     # 3. Calculate how many augmented samples we need for LFC
     gap = hfc_count - lfc_count
 
-    print(f"Balancing dataset... Adding {gap} augmented samples to LFC.")
+    # print(f"Balancing dataset... Adding {gap} augmented samples to LFC.")
 
     # Randomly pick from existing LFC files and duplicate them until the gap is filled
     for _ in range(gap):
