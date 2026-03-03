@@ -96,12 +96,15 @@ def train(train_dataloader: DataLoader, val_dataloader: DataLoader, model: nn.Mo
               f"Train Acc: {train_acc * 100:.2f}% | Val Acc: {val_acc * 100:.2f}% | "
               f"Precision: {precision:.4f} | Recall: {recall:.4f} | F1: {f1:.4f} ")
 
-
+    param_string = (
+        f"{model_name_str}_ep{config.EPOCHS}_lr{config.LEARNING_RATE}_"
+        f"bs{config.BATCH_SIZE}_{config.OPTIMIZER_TYPE}_mfcc{config.N_MFCC}"
+    )
     # ----Generate Confusion Matrix --------
     cm = confusion_matrix(all_labels, all_preds)
-    draw_confusion_matrix(cm, model_name_str)
+    draw_confusion_matrix(cm, param_string)
 
-    draw_f1_score(model_name=model_name_str,f1_scores=f1_scores)
+    draw_f1_score(model_name=param_string,f1_scores=f1_scores)
 
     # --- SAVE MODEL FILE ---
     os.makedirs("models", exist_ok=True)
@@ -118,7 +121,9 @@ def train(train_dataloader: DataLoader, val_dataloader: DataLoader, model: nn.Mo
     # --- WRITE TO CENTRAL LOG FILE ---
     log_entry = (f"Model: {model_name_str} | Epochs: {config.EPOCHS} | "
                  f"Train Acc: {final_train_acc * 100:.2f}% | Val Acc: {final_val_acc * 100:.2f}% | "
-                 f"Precision: {precision:.4f} | Recall: {recall:.4f} | F1: {f1:.4f} | Timestamp: {timestamp}\n")
+                 f"Precision: {precision:.4f} | Recall: {recall:.4f} | F1: {f1:.4f} |"
+                 f"Batch Size: {config.BATCH_SIZE} | Learning Rate: {config.LEARNING_RATE} | "
+                 f"Optimizer Type: {config.OPTIMIZER_TYPE} | N_MFCC: {config.N_MFCC} | Timestamp: {timestamp}\n")
     log_path = os.path.join("logs", "all_models_summary.txt")
     with open(log_path, "a") as f:
         f.write(log_entry)
