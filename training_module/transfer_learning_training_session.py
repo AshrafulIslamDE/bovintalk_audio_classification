@@ -45,6 +45,8 @@ def prepare_model()-> list[nn.Module]:
     return model_list
 
 def start_training(model:nn.Module,transformation:nn.Module, model_name:str)->None:
+    print(f"\n--- Starting Training: {model_name} ---")
+
     train_loader, val_loader = get_dataloader(
         transformation,
         collate_fn=collate_fn,

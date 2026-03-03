@@ -8,6 +8,7 @@ from training_module.training_config_utils import update_config_from_args
 
 def cnn_training_setup(transformation,curr_model_name):
 
+        print(f"\n--- Starting Training: {curr_model_name} ---")
 
         train_loader, val_loader = get_dataloader(
             transformation,
