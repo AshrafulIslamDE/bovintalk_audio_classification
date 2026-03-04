@@ -5,6 +5,7 @@ from audio_dataset_transformation_config import get_mfcc_transformation, get_mel
 from dataset.transfer_learning_dataset import TransferLearningDataset
 from training_module.dataloader import get_dataloader
 from training_module.train import draw_f1_score, train, collate_fn
+from training_module.training_config_utils import update_config_from_args
 
 
 def download_pretrained_model()->list[nn.Module]:
@@ -19,7 +20,7 @@ def download_pretrained_model()->list[nn.Module]:
 
     resnet18.fc = nn.Linear(resnet18.fc.in_features, 2)
 
-    return [vgg16,resnet18]
+    return [resnet18,vgg16]
 
 def finetune_downloaded_model(model:nn.Module)->nn.Module:
     # Freeze feature extractor
@@ -61,6 +62,7 @@ def start_training(model:nn.Module,transformation:nn.Module, model_name:str)->No
     )
 
 if __name__=="__main__":
+    update_config_from_args()
     model_list=prepare_model()
     for model in model_list:
         start_training(model, get_mfcc_transformation(), model.__class__.__name__ + "_mfcc")
